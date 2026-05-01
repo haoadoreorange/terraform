@@ -1,0 +1,25 @@
+---
+- name: Install Tailscale
+  hosts: tailscale
+  become: yes
+  tasks:
+    - name: Add Tailscale repository
+      deb822_repository:
+        name: tailscale
+        types: deb
+        uris: https://pkgs.tailscale.com/stable/debian
+        suites: bookworm
+        components: main
+        signed_by: https://pkgs.tailscale.com/stable/debian/bookworm.noarmor.gpg
+
+    - name: Install Tailscale
+      apt:
+        name: tailscale
+        state: present
+        update_cache: yes
+
+    - name: Start Tailscale
+      systemd:
+        name: tailscaled
+        state: started
+        enabled: yes
